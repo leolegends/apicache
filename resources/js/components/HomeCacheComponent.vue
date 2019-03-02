@@ -60,7 +60,8 @@ export default {
             endpoint: this.url,
             lines: ['1'],
             values: [],
-            keys: []
+            keys: [],
+            endpoint_input: ''
         }
     },
     methods: {
@@ -81,6 +82,10 @@ export default {
         addLineHeader: function(){
             this.lines.push(1);
         }
+    },
+    mounted(){
+        // console.log(this.values);
+        console.log("Hello!");
     }
 }
 </script>
