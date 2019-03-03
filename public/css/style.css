@@ -128,7 +128,7 @@ body {
 }
 .search-form {
   position: absolute;
-  top: 30%;
+  top: 20%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);

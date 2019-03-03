@@ -1847,6 +1847,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     'url': ''
@@ -1858,16 +1880,34 @@ __webpack_require__.r(__webpack_exports__);
       lines: ['1'],
       values: [],
       keys: [],
-      endpoint_input: ''
+      endpoint_input: '',
+      http_methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      method_select: "GET",
+      link_cache: "Seja um Quark =D"
     };
   },
   methods: {
     generateCache: function generateCache() {
-      console.log(this.keys);
+      var _this = this;
+
+      if (this.endpoint_input == "") {
+        document.getElementById("endpoint_input").focus();
+        alert("O Campo endpoint deve ser preenchido.");
+        return;
+      } //   this.link_cache = "www.test.com.br";
+
+
       window.axios.post(this.endpoint, {
-        "url": url
-      }).fetch(function (data) {
-        return data.url;
+        "url": this.endpoint_input,
+        "method": this.method_select,
+        "header": this.keys,
+        "value": this.values
+      }).then(function (_ref) {
+        var data = _ref.data;
+        console.log(data);
+        _this.link_cache = data.url;
+      }).catch(function (data) {
+        _this.link_cache = "Algo deu errado, verifique os parametros de entrada.";
       });
     },
     removeHeader: function removeHeader(key) {
@@ -36977,7 +37017,55 @@ var render = function() {
   return _c("div", { staticClass: "container search-form" }, [
     _vm._m(0),
     _vm._v(" "),
+    _c("p", { staticClass: "text-white" }, [
+      _vm._v("Os endpoints cacheados são expirados em 2 horas.")
+    ]),
+    _vm._v(" "),
     _c("div", { staticClass: "row mt-3" }, [
+      _c("div", { staticClass: "input-group mb-3" }, [
+        _vm._m(1),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.method_select,
+                expression: "method_select"
+              }
+            ],
+            staticClass: "custom-select",
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.method_select = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              }
+            }
+          },
+          _vm._l(_vm.http_methods, function(method) {
+            return _c(
+              "option",
+              { attrs: { value: "method" }, domProps: { value: method } },
+              [_vm._v(_vm._s(method))]
+            )
+          }),
+          0
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "search-box text-white" }, [
           _c("label", { attrs: { for: "" } }, [_vm._v("Endpoint")]),
@@ -36995,8 +37083,10 @@ var render = function() {
               staticClass: "form-control",
               attrs: {
                 type: "text",
+                id: "endpoint_input",
                 placeholder: "Entre com a URL da API e Pronto!",
-                "aria-describedby": "basic-addon2"
+                "aria-describedby": "basic-addon2",
+                required: ""
               },
               domProps: { value: _vm.endpoint_input },
               on: {
@@ -37014,7 +37104,7 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-success",
-                  attrs: { type: "button" },
+                  attrs: { type: "submit" },
                   on: {
                     click: function($event) {
                       return _vm.generateCache()
@@ -37032,14 +37122,14 @@ var render = function() {
     _c("div", { staticClass: "row text-white" }, [
       _c(
         "div",
-        { staticClass: "col-md-12 align-self-center" },
+        { staticClass: "col-md-12 align-s\n            elf-center" },
         [
           _c("label", { attrs: { for: "" } }, [_vm._v("Headers")]),
           _vm._v(" "),
           _vm._l(_vm.lines, function(line, key) {
             return _c("div", { attrs: { id: "headers" } }, [
               _c("div", { staticClass: "input-group" }, [
-                _vm._m(1, true),
+                _vm._m(2, true),
                 _vm._v(" "),
                 _c("input", {
                   directives: [
@@ -37125,6 +37215,24 @@ var render = function() {
           [_vm._v("New Key")]
         )
       ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row mt-4", attrs: { id: "url" } }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("label", { staticClass: "text-white", attrs: { for: "" } }, [
+          _vm._v("URL Cacheada")
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "alert alert-success", attrs: { role: "alert" } },
+          [
+            _vm._v(
+              "\n                " + _vm._s(_vm.link_cache) + "\n            "
+            )
+          ]
+        )
+      ])
     ])
   ])
 }
@@ -37134,8 +37242,23 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("h1", { staticClass: "text-white" }, [
-      _vm._v("Quarks"),
-      _c("b", [_vm._v("Cache")])
+      _c("b", [_vm._v("Quarks")]),
+      _vm._v("Cache")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c(
+        "label",
+        {
+          staticClass: "input-group-text",
+          attrs: { for: "inputGroupSelect01" }
+        },
+        [_vm._v("Method")]
+      )
     ])
   },
   function() {

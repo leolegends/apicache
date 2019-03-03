@@ -14,16 +14,19 @@ class RedisController extends Controller
     public function generateCache(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'url' => 'required|url'
+            'url' => 'required|url',
+            'method' => 'required'
         ]);
 
         if($validator->fails()){
             return Response([
                 'status' => 401,
                 'msg' => 'URL invalida!'
-            ]);
+            ], 401);
         }
-        $valid = $this->validaURLTrait($request->url);
+
+        $valid = $this->validaURLTrait($request);
+
         if($valid){
 
             $cache = $this->generateCacheTrait($valid);
@@ -36,10 +39,11 @@ class RedisController extends Controller
             ];
         }
 
-        return false;
-        
-        return $this->generateCacheTrait($request->url);
-    
+        return Response([
+            'status' => 401,
+            'msg' => 'algo deu errado!'
+        ], 401);
+            
     }
 
     public function getCache($id)

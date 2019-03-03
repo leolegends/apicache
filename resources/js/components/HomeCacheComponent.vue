@@ -1,17 +1,29 @@
 <template>
     
         <div class="container search-form">
-            <h1 class="text-white">Quarks<b>Cache</b></h1>
+            <h1 class="text-white"><b>Quarks</b>Cache</h1>
+            <p class="text-white">Os endpoints cacheados são expirados em 2 horas.</p>
+
             <div class="row mt-3">
+                <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">Method</label>
+                </div>
+                <select class="custom-select" v-model="method_select">
+                    <option value="method" v-for="method in http_methods" :value="method">{{method}}</option>
+                </select>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-12">
 
                     <div class="search-box text-white">
                         
                             <label for="">Endpoint</label>
                         <div class="input-group mb-3">
-                                <input type="text" v-model="endpoint_input" class="form-control" placeholder="Entre com a URL da API e Pronto!" aria-describedby="basic-addon2">
+                                <input type="text" v-model="endpoint_input" id="endpoint_input" class="form-control" placeholder="Entre com a URL da API e Pronto!" aria-describedby="basic-addon2" required>
                                 <div class="input-group-append">
-                                    <button class="btn btn-success" @click="generateCache()" type="button">Cachear</button>
+                                    <button type="submit" class="btn btn-success" @click="generateCache()">Cachear</button>
                                 </div>
                         </div>
                                   
@@ -20,8 +32,8 @@
                 </div>
             </div>
             <div class="row text-white">
-                    
-                    <div class="col-md-12 align-self-center">
+                    <div class="col-md-12 align-s
+                    elf-center">
                             <label for="">Headers</label>
                             <div id="headers" v-for="(line, key) in lines">
                                 <div class="input-group">
@@ -44,6 +56,16 @@
                     <button @click="addLineHeader()" class="btn btn-primary text-center">New Key</button>
                 </div>
             </div>
+
+            <div class="row mt-4" id="url">
+                <div class="col-md-12">
+                    <label for="" class="text-white">URL Cacheada</label>
+                    <div class="alert alert-success" role="alert">
+                        {{link_cache}}
+                    </div>  
+                </div>
+            </div>
+            
         </div>
             
 </template>
@@ -61,19 +83,39 @@ export default {
             lines: ['1'],
             values: [],
             keys: [],
-            endpoint_input: ''
+            endpoint_input: '',
+            http_methods: [
+                'GET',
+                'POST',
+                'PUT',
+                'DELETE'
+            ],
+            method_select: "GET",
+            link_cache: "Seja um Quark =D"
         }
     },
     methods: {
 
         generateCache: function() {
             
-            console.log(this.keys);
+            if(this.endpoint_input == ""){
+                document.getElementById("endpoint_input").focus();
+                alert("O Campo endpoint deve ser preenchido.");
+                return;
+            }
+
+         //   this.link_cache = "www.test.com.br";
 
             window.axios.post(this.endpoint, {
-                    "url": url
-            }).fetch((data) => {
-                return data.url;
+                    "url": this.endpoint_input,
+                    "method": this.method_select,
+                    "header": this.keys,
+                    "value": this.values
+            }).then(({data}) => {
+                console.log(data);
+                this.link_cache = data.url;
+            }).catch((data) => {
+                this.link_cache = "Algo deu errado, verifique os parametros de entrada."
             });
         },
         removeHeader: function(key){
@@ -84,6 +126,7 @@ export default {
         }
     },
     mounted(){
+        
         // console.log(this.values);
         console.log("Hello!");
     }
